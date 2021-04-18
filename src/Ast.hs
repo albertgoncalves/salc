@@ -34,12 +34,18 @@ data Expr
   | EUnOp (Pos Op) Expr
   deriving (Eq, Show)
 
+data Type
+  = TI32
+  | TF32
+  deriving (Eq, Show)
+
 data Stmt
-  = SAssign Expr Expr
+  = SBlock [Stmt]
+  | SAssign Expr Expr
+  | SDecl (Pos Type) Expr (Maybe Expr)
   | SEffect Expr
   | SIf Expr [Stmt]
   | SIfElse Expr [Stmt] [Stmt]
-  | SBlock [Stmt]
   deriving (Eq, Show)
 
 isNewline :: Char -> Bool
@@ -157,9 +163,22 @@ ifElse = (SIfElse <$> p1 <*> block <*> (p2 *> p3)) <|> p4
     p3 = block <|> (pure <$> ifElse) <|> (pure <$> p4)
     p4 = SIf <$> p1 <*> block
 
+type' :: Parser (Pos Type)
+type' = const TI32 <$$> string "i32"
+
+decl :: Parser Stmt
+decl = p4 <|> p5
+  where
+    p1 = type' <* manySpaces
+    p2 = expr <* manySpaces <* char '=' <* manySpaces
+    p3 = expr <* semicolon
+    p4 = SDecl <$> p1 <*> p3 <*> pure Nothing
+    p5 = SDecl <$> p1 <*> p2 <*> (Just <$> p3)
+
 stmt :: Parser Stmt
 stmt =
   SBlock <$> block
     <|> ifElse
     <|> assign
+    <|> decl
     <|> effect

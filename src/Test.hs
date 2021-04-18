@@ -5,6 +5,7 @@ import Ast
   ( Expr (..),
     Op (..),
     Stmt (..),
+    Type (..),
     bool,
     charLiteral,
     comment,
@@ -16,6 +17,7 @@ import Ast
     space,
     stmt,
     stringLiteral,
+    type',
   )
 import Data.Semigroup (Min (..))
 import Data.Text (Text)
@@ -374,6 +376,16 @@ main = do
     ]
   eq
     [ ( FILE_LINE,
+        parseWith type' "",
+        Empty $ Left 0
+      ),
+      ( FILE_LINE,
+        parseWith type' "i32",
+        Consumed $ Right ((Min 1, TI32), Input 3 "")
+      )
+    ]
+  eq
+    [ ( FILE_LINE,
         parseWith stmt "",
         Empty $ Left 0
       ),
@@ -482,6 +494,38 @@ main = do
                 []
                 [SIf (EBool (Min 21, False)) []],
               Input 29 ""
+            )
+      ),
+      ( FILE_LINE,
+        parseWith stmt "i32 x;",
+        Consumed $
+          Right (SDecl (Min 1, TI32) (EIdent (Min 5, "x")) Nothing, Input 6 "")
+      ),
+      ( FILE_LINE,
+        parseWith stmt "i32 x = 0;",
+        Consumed $
+          Right
+            ( SDecl
+                (Min 1, TI32)
+                (EIdent (Min 5, "x"))
+                (Just $ EInt (Min 9, 0)),
+              Input 10 ""
+            )
+      ),
+      ( FILE_LINE,
+        parseWith stmt "i32 x = (- 1.0 2.0);",
+        Consumed $
+          Right
+            ( SDecl
+                (Min 1, TI32)
+                (EIdent (Min 5, "x"))
+                ( Just $
+                    EBinOp
+                      (Min 10, OpSub)
+                      (EFloat (Min 12, 1.0))
+                      (EFloat (Min 16, 2.0))
+                ),
+              Input 20 ""
             )
       )
     ]
