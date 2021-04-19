@@ -14,7 +14,7 @@ newtype Col = Col Int
   deriving (Num, Show)
 
 getLineCol :: Text -> Int -> (Line, Col)
-getLineCol t n = foldl' f (Line 1, Col 1) $ take n t
+getLineCol t n = foldl' f (1, 1) $ take n t
   where
     f (l, c) x
       | isNewline x = (l + 1, 1)
