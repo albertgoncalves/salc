@@ -42,10 +42,13 @@ data Type
 data Stmt
   = SBlock [Stmt]
   | SAssign Expr Expr
+  | SBreak (Pos ())
+  | SCont (Pos ())
   | SDecl (Pos Type) Expr (Maybe Expr)
   | SEffect Expr
   | SIf Expr [Stmt]
   | SIfElse Expr [Stmt] [Stmt]
+  | SLoop [Stmt]
   deriving (Eq, Show)
 
 isNewline :: Char -> Bool
@@ -178,6 +181,9 @@ decl = p4 <|> p5
 stmt :: Parser Stmt
 stmt =
   SBlock <$> block
+    <|> SBreak <$> (void <$> string "break" <* semicolon)
+    <|> SCont <$> (void <$> string "continue" <* semicolon)
+    <|> SLoop <$> (string "loop" *> manySpaces *> block)
     <|> ifElse
     <|> assign
     <|> decl

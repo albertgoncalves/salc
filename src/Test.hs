@@ -527,5 +527,28 @@ main = do
                 ),
               Input 20 ""
             )
+      ),
+      ( FILE_LINE,
+        parseWith stmt "loop { }",
+        Consumed $ Right (SLoop [], Input 8 "")
+      ),
+      ( FILE_LINE,
+        parseWith stmt "loop { i32 x; x = 0; }",
+        Consumed $
+          Right
+            ( SLoop
+                [ SDecl (Min 8, TI32) (EIdent (Min 12, "x")) Nothing,
+                  SAssign (EIdent (Min 15, "x")) (EInt (Min 19, 0))
+                ],
+              Input 22 ""
+            )
+      ),
+      ( FILE_LINE,
+        parseWith stmt "break;",
+        Consumed $ Right (SBreak (Min 1, ()), Input 6 "")
+      ),
+      ( FILE_LINE,
+        parseWith stmt "continue\n    ;",
+        Consumed $ Right (SCont (Min 1, ()), Input 14 "")
       )
     ]
