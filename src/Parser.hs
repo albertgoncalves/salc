@@ -87,7 +87,7 @@ end = Parser $ \i ->
     else Empty $ Left (pos i)
 
 many1 :: Parser a -> Parser [a]
-many1 p = (:) <$> p <*> (many1 p <|> pure [])
+many1 p = (:) <$> p <*> many p
 
 many :: Parser a -> Parser [a]
 many p = many1 p <|> pure []
