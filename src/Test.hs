@@ -372,6 +372,17 @@ main = do
                 ],
               Input 22 ""
             )
+      ),
+      ( FILE_LINE,
+        parseWith expr "(< a b)",
+        Consumed $
+          Right
+            ( EBinOp
+                (Min 2, OpLT)
+                (EIdent (Min 4, "a"))
+                (EIdent (Min 6, "b")),
+              Input 7 ""
+            )
       )
     ]
   eq

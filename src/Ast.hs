@@ -20,6 +20,7 @@ data Op
   = OpDot
   | OpAdd
   | OpSub
+  | OpLT
   deriving (Eq, Show)
 
 data Expr
@@ -112,7 +113,11 @@ negative :: Parser (Pos Op)
 negative = const OpSub <$$> char '-'
 
 op :: Parser (Pos Op)
-op = negative <|> (const OpDot <$$> char '.') <|> (const OpAdd <$$> char '+')
+op =
+  negative
+    <|> (const OpDot <$$> char '.')
+    <|> (const OpAdd <$$> char '+')
+    <|> (const OpLT <$$> char '<')
 
 parens :: Parser a -> Parser a
 parens p = char '(' *> manySpaces *> p <* manySpaces <* char ')'
