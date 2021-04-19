@@ -2,11 +2,9 @@
 
 set -euo pipefail
 
-for x in bin build; do
-    if [ ! -d "$WD/$x" ]; then
-        mkdir "$WD/$x"
-    fi
-done
+if [ ! -d "$WD/bin" ]; then
+    mkdir "$WD/bin"
+fi
 
 now () {
     date +%s.%N
@@ -15,7 +13,6 @@ now () {
 flags=(
     -fdiagnostics-color=always
     -funbox-strict-fields
-    -outputdir "$WD/build"
     -Wall
     -Wcompat
     -Werror
@@ -35,8 +32,8 @@ flags=(
         cd "$WD/src"
         hlint ./*.hs
         ormolu -i ./*.hs
-        ghc "${flags[@]}" -o "$WD/bin/test" Test.hs
-        ghc "${flags[@]}" -o "$WD/bin/main" Main.hs
+        ghc "${flags[@]}" -o "$WD/bin/test" -outputdir "$WD/build/test" Test.hs
+        ghc "${flags[@]}" -o "$WD/bin/main" -outputdir "$WD/build/main" Main.hs
     )
     end=$(now)
     python3 -c "print(\"Compiled! ({:.3f}s)\".format(${end} - ${start}))"
