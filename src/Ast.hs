@@ -189,3 +189,6 @@ stmt =
     <|> assign
     <|> decl
     <|> SEffect <$> expr <* semicolon
+
+program :: Parser [Stmt]
+program = manySpaces *> many (stmt <* manySpaces) <* end

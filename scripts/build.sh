@@ -35,10 +35,11 @@ flags=(
         cd "$WD/src"
         hlint ./*.hs
         ormolu -i ./*.hs
-        ghc "${flags[@]}" -o "$WD/bin/test_compiler" Test.hs
+        ghc "${flags[@]}" -o "$WD/bin/test" Test.hs
+        ghc "${flags[@]}" -o "$WD/bin/main" Main.hs
     )
     end=$(now)
     python3 -c "print(\"Compiled! ({:.3f}s)\".format(${end} - ${start}))"
 )
 
-"$WD/bin/test_compiler"
+"$WD/bin/test"
