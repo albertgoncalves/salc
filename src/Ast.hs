@@ -113,9 +113,6 @@ negative = const OpSub <$$> char '-'
 op :: Parser (Pos Op)
 op = negative <|> (const OpDot <$$> char '.') <|> (const OpAdd <$$> char '+')
 
-unOp :: Parser Expr
-unOp = EUnOp <$> (negative <* manySpaces) <*> expr
-
 parens :: Parser a -> Parser a
 parens p = char '(' *> manySpaces *> p <* manySpaces <* char ')'
 
@@ -133,7 +130,7 @@ call = parens $ ECall <$> p1 <*> p2
 expr :: Parser Expr
 expr =
   parens expr
-    <|> unOp
+    <|> EUnOp <$> (negative <* manySpaces) <*> expr
     <|> binOp
     <|> call
     <|> EBool <$> bool
@@ -151,9 +148,6 @@ assign = SAssign <$> p1 <*> p2
   where
     p1 = expr <* manySpaces <* char '=' <* manySpaces
     p2 = expr <* semicolon
-
-effect :: Parser Stmt
-effect = SEffect <$> expr <* semicolon
 
 block :: Parser [Stmt]
 block = char '{' *> manySpaces *> many (stmt <* manySpaces) <* char '}'
@@ -187,4 +181,4 @@ stmt =
     <|> ifElse
     <|> assign
     <|> decl
-    <|> effect
+    <|> SEffect <$> expr <* semicolon
