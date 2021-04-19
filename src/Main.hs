@@ -1,11 +1,11 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 import Ast (Stmt, isNewline, program)
-import Data.Text (Text, uncons)
+import Data.Text (Text, foldl', take)
 import Data.Text.IO (readFile)
 import Parser (Consumed (..), Input (..), parse)
 import System.Environment (getArgs)
-import Prelude hiding (readFile)
+import Prelude hiding (readFile, take)
 
 newtype Line = Line Int
   deriving (Num, Show)
@@ -13,22 +13,19 @@ newtype Line = Line Int
 newtype Col = Col Int
   deriving (Num, Show)
 
-getLineCol :: Text -> Line -> Col -> Int -> (Line, Col)
-getLineCol _ l c 0 = (l, c)
-getLineCol t l c n = case uncons t of
-  Just (x, t')
-    | isNewline x -> getLineCol t' (l + 1) 0 (n - 1)
-    | otherwise -> getLineCol t' l (c + 1) (n - 1)
-  Nothing -> undefined
+getLineCol :: Text -> Int -> (Line, Col)
+getLineCol t n = foldl' f (Line 1, Col 1) $ take n t
+  where
+    f (l, c) x
+      | isNewline x = (l + 1, 1)
+      | otherwise = (l, c + 1)
 
 main :: IO ()
 main = do
   source <- getArgs >>= readFile . head
-  let printEither =
-        either
-          (print . getLineCol source (Line 1) (Col 1))
-          print ::
+  let f =
+        either (print . getLineCol source) print ::
           Either Int ([Stmt], Input) -> IO ()
   case parse program $ Input 0 source of
-    Consumed x -> printEither x
-    Empty x -> printEither x
+    Consumed x -> f x
+    Empty x -> f x
