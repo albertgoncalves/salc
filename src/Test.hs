@@ -550,5 +550,9 @@ main = do
       ( FILE_LINE,
         parseWith stmt "continue\n    ;",
         Consumed $ Right (SCont (Min 1, ()), Input 14 "")
+      ),
+      ( FILE_LINE,
+        parseWith stmt "return\ntrue\n;",
+        Consumed $ Right (SRet (EBool (Min 8, True)), Input 13 "")
       )
     ]

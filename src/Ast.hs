@@ -49,6 +49,7 @@ data Stmt
   | SIf Expr [Stmt]
   | SIfElse Expr [Stmt] [Stmt]
   | SLoop [Stmt]
+  | SRet Expr
   deriving (Eq, Show)
 
 isNewline :: Char -> Bool
@@ -177,6 +178,7 @@ stmt =
   SBlock <$> block
     <|> SBreak <$> (void <$> string "break" <* semicolon)
     <|> SCont <$> (void <$> string "continue" <* semicolon)
+    <|> SRet <$> (string "return" *> manySpaces *> expr <* semicolon)
     <|> SLoop <$> (string "loop" *> manySpaces *> block)
     <|> ifElse
     <|> assign
