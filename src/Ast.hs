@@ -36,8 +36,10 @@ data Expr
   deriving (Eq, Show)
 
 data Type
-  = TI32
+  = TBool
+  | TChar
   | TF32
+  | TI32
   deriving (Eq, Show)
 
 data Stmt
@@ -107,7 +109,11 @@ singleQuote :: Parser (Pos Char)
 singleQuote = char '\''
 
 charLiteral :: Parser (Pos Char)
-charLiteral = singleQuote *> satisfy (const True) <* singleQuote
+charLiteral = singleQuote *> (p1 <|> p2 <|> p3) <* singleQuote
+  where
+    p1 = const '\'' <$$> string "\\'"
+    p2 = const '\n' <$$> string "\\n"
+    p3 = satisfy (const True)
 
 negative :: Parser (Pos Op)
 negative = const OpSub <$$> char '-'
@@ -167,7 +173,11 @@ ifElse = (SIfElse <$> p1 <*> block <*> (p2 *> p3)) <|> p4
     p4 = SIf <$> p1 <*> block
 
 type' :: Parser (Pos Type)
-type' = const TI32 <$$> string "i32"
+type' =
+  const TI32 <$$> string "i32"
+    <|> const TF32 <$$> string "f32"
+    <|> const TBool <$$> string "bool"
+    <|> const TChar <$$> string "char"
 
 decl :: Parser Stmt
 decl = p4 <|> p5

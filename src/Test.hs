@@ -197,12 +197,20 @@ main = do
         Empty $ Left 0
       ),
       ( FILE_LINE,
-        parseWith charLiteral "'\0'",
-        Consumed $ Right ((Min 2, '\0'), Input 3 "")
+        parseWith charLiteral "'_'",
+        Consumed $ Right ((Min 2, '_'), Input 3 "")
       ),
       ( FILE_LINE,
         parseWith charLiteral "''",
         Consumed $ Left 2
+      ),
+      ( FILE_LINE,
+        parseWith charLiteral "'\\''",
+        Consumed $ Right ((Min 2, '\''), Input 4 "")
+      ),
+      ( FILE_LINE,
+        parseWith charLiteral "'\\n'",
+        Consumed $ Right ((Min 2, '\n'), Input 4 "")
       )
     ]
   eq
@@ -393,6 +401,18 @@ main = do
       ( FILE_LINE,
         parseWith type' "i32",
         Consumed $ Right ((Min 1, TI32), Input 3 "")
+      ),
+      ( FILE_LINE,
+        parseWith type' "f32",
+        Consumed $ Right ((Min 1, TF32), Input 3 "")
+      ),
+      ( FILE_LINE,
+        parseWith type' "bool",
+        Consumed $ Right ((Min 1, TBool), Input 4 "")
+      ),
+      ( FILE_LINE,
+        parseWith type' "char",
+        Consumed $ Right ((Min 1, TChar), Input 4 "")
       )
     ]
   eq
