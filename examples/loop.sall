@@ -1,6 +1,11 @@
 i32 a;
 i32 b = 0;
+f32 c = 1.0;
+
 loop {
+    char x = true;
+    char y = '\n';
+    char z = 'a';
     a = b;
     b = (+ b 1);
     # ...
@@ -8,4 +13,5 @@ loop {
     if (< 10 a) {
         break;
     }
+    continue;
 }
