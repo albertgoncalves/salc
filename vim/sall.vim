@@ -9,7 +9,7 @@ endif
 syn match Character     "'[^']'"
 syn match Comment       "#.*$"
 syn match Float         "\<[0-9]\+\.[0-9]\+\>"
-syn match Function      "\<call[ \n]\+[^ \n]\+\>"
+syn match Function      "\$[ \n]\+[^ \n]\+\>"
 syn match Number        "\<[0-9]\+\>"
 syn match Operator      "[(){}\[\]=;,!+\-<>]"
 syn match SpecialChar   "'\\['n]'"

@@ -9,7 +9,7 @@ loop {
     a = b;
     b = (+ b 1);
     # ...
-    (call f a b);
+    ($ f a b);
     if (< 10 a) {
         break;
     }

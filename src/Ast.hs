@@ -136,7 +136,7 @@ binOp = parens $ EBinOp <$> op <*> p <*> p
 call :: Parser Expr
 call = parens $ ECall <$> p1 <*> p2
   where
-    p1 = string "call" *> manySpaces *> expr <* manySpaces
+    p1 = char '$' *> manySpaces *> expr <* manySpaces
     p2 = many (expr <* manySpaces)
 
 expr :: Parser Expr

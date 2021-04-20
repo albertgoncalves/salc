@@ -334,51 +334,51 @@ main = do
             )
       ),
       ( FILE_LINE,
-        parseWith expr "(call f)",
-        Consumed $ Right (ECall (EIdent (Min 7, "f")) [], Input 8 "")
+        parseWith expr "($ f)",
+        Consumed $ Right (ECall (EIdent (Min 4, "f")) [], Input 5 "")
       ),
       ( FILE_LINE,
-        parseWith expr "(call f # ...\n)",
-        Consumed $ Right (ECall (EIdent (Min 7, "f")) [], Input 15 "")
+        parseWith expr "($ f # ...\n)",
+        Consumed $ Right (ECall (EIdent (Min 4, "f")) [], Input 12 "")
       ),
       ( FILE_LINE,
-        parseWith expr "(call (. a f))",
+        parseWith expr "($ (. a f))",
         Consumed $
           Right
             ( ECall
                 ( EBinOp
-                    (Min 8, OpDot)
-                    (EIdent (Min 10, "a"))
-                    (EIdent (Min 12, "f"))
+                    (Min 5, OpDot)
+                    (EIdent (Min 7, "a"))
+                    (EIdent (Min 9, "f"))
                 )
                 [],
-              Input 14 ""
+              Input 11 ""
             )
       ),
       ( FILE_LINE,
-        parseWith expr "( call f\n-2 a true )",
+        parseWith expr "( $ f\n-2 a true )",
         Consumed $
           Right
             ( ECall
-                (EIdent (Min 8, "f"))
-                [ EUnOp (Min 10, OpSub) (EInt (Min 11, 2)),
-                  EIdent (Min 13, "a"),
-                  EBool (Min 15, True)
+                (EIdent (Min 5, "f"))
+                [ EUnOp (Min 7, OpSub) (EInt (Min 8, 2)),
+                  EIdent (Min 10, "a"),
+                  EBool (Min 12, True)
                 ],
-              Input 20 ""
+              Input 17 ""
             )
       ),
       ( FILE_LINE,
-        parseWith expr "( call f\n-2  a#\ntrue )",
+        parseWith expr "( $ f\n-2  a#\ntrue )",
         Consumed $
           Right
             ( ECall
-                (EIdent (Min 8, "f"))
-                [ EUnOp (Min 10, OpSub) (EInt (Min 11, 2)),
-                  EIdent (Min 14, "a"),
-                  EBool (Min 17, True)
+                (EIdent (Min 5, "f"))
+                [ EUnOp (Min 7, OpSub) (EInt (Min 8, 2)),
+                  EIdent (Min 11, "a"),
+                  EBool (Min 14, True)
                 ],
-              Input 22 ""
+              Input 19 ""
             )
       ),
       ( FILE_LINE,
@@ -452,34 +452,33 @@ main = do
             )
       ),
       ( FILE_LINE,
-        parseWith stmt "(call f);",
-        Consumed $ Right (SEffect (ECall (EIdent (Min 7, "f")) []), Input 9 "")
+        parseWith stmt "($f);",
+        Consumed $ Right (SEffect (ECall (EIdent (Min 3, "f")) []), Input 5 "")
       ),
       ( FILE_LINE,
-        parseWith stmt "(\ncall f\n)\n;",
-        Consumed $
-          Right (SEffect (ECall (EIdent (Min 8, "f")) []), Input 12 "")
+        parseWith stmt "(\n$ f\n)\n;",
+        Consumed $ Right (SEffect (ECall (EIdent (Min 5, "f")) []), Input 9 "")
       ),
       ( FILE_LINE,
-        parseWith stmt "if true {\n    (call f);\n}",
+        parseWith stmt "if true {\n    ($ f);\n}",
         Consumed $
           Right
             ( SIf
                 (EBool (Min 4, True))
-                [SEffect (ECall (EIdent (Min 21, "f")) [])],
-              Input 25 ""
+                [SEffect (ECall (EIdent (Min 18, "f")) [])],
+              Input 22 ""
             )
       ),
       ( FILE_LINE,
-        parseWith stmt "iftrue{(call f)# ...\n;( call g ) # ...\n;}",
+        parseWith stmt "iftrue{($ f)# ...\n;( $ g ) # ...\n;}",
         Consumed $
           Right
             ( SIf
                 (EBool (Min 3, True))
-                [ SEffect (ECall (EIdent (Min 14, "f")) []),
-                  SEffect (ECall (EIdent (Min 30, "g")) [])
+                [ SEffect (ECall (EIdent (Min 11, "f")) []),
+                  SEffect (ECall (EIdent (Min 24, "g")) [])
                 ],
-              Input 41 ""
+              Input 35 ""
             )
       ),
       ( FILE_LINE,
