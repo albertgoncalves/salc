@@ -8,14 +8,12 @@ endif
 
 syn match Character     "'[^']'"
 syn match Comment       "#.*$"
-syn match Function      "\$[ \n]\+[^ \n]\+\>"
-syn match Operator      "[(){}\[\]=;,!+\-<>@]"
+syn match Operator      "[(){}\[\]=;,!+\-<>\$@]"
 syn match SpecialChar   "'\\['n]'"
-
-syn region String start=+"+ skip=+\\"+ end=+"+
-
 syn match Number        "\<[0-9]\+\>"
 syn match Float         "\<[0-9]\+\.[0-9]\+\>"
+
+syn region String start=+"+ skip=+\\"+ end=+"+
 
 syn keyword Boolean
     \ true
@@ -24,10 +22,13 @@ syn keyword Conditional
     \ if
     \ else
 syn keyword Keyword
+    \ fn
+    \ in
     \ break
     \ continue
     \ return
 syn keyword Repeat
+    \ for
     \ loop
 syn keyword Type
     \ i32
